@@ -27,7 +27,7 @@ namespace SakilaModoConectado
         }
 
         public MySqlConnection conexion { get; set; }
-        List<Country> countries { get; set; } = new List<Country>();
+        List<Country> countries { get; set; }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
@@ -36,6 +36,7 @@ namespace SakilaModoConectado
             try
             {
                 conexion.Open();
+                chkConectado.IsChecked = true;
             }
             catch (Exception)
             {
@@ -45,7 +46,7 @@ namespace SakilaModoConectado
 
         private void Window_Unloaded(object sender, RoutedEventArgs e)
         {
-
+            conexion.Close();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -56,6 +57,7 @@ namespace SakilaModoConectado
 
             if (reader.HasRows)
             {
+                countries = new List<Country>();
                 while (reader.Read())
                 {
                     countries.Add(
@@ -69,6 +71,34 @@ namespace SakilaModoConectado
                 }
                 gpCountries.ItemsSource = countries;
             }
+            reader.Close();
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            string consulta = $"SELECT * FROM country WHERE country.country LIKE @filtro";
+            string filtro =  txtFIltro.Text + "%";
+            MySqlCommand command = new MySqlCommand(consulta, conexion);
+            command.Parameters.AddWithValue("@filtro", filtro);
+            MySqlDataReader reader = command.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                countries = new List<Country>();
+                while (reader.Read())
+                {
+                    countries.Add(
+                        new Country
+                        {
+                            country_id = (ushort)reader[0],
+                            country = (string)reader[1],
+                            last_update = (DateTime)reader[2]
+                        }
+                    );
+                }
+                gpCountries.ItemsSource = countries;
+            }
+            reader.Close();
         }
     }
 }

@@ -8,8 +8,15 @@
         Loaded="Window_Loaded"
         Unloaded="Window_Unloaded"
         Title="MainWindow" Height="450" Width="800">
-    <StackPanel>
-        <Button Click="Button_Click">Consular</Button>
-        <DataGrid x:Name="gpCountries"/>
-    </StackPanel>
+    <DockPanel>
+        <StackPanel DockPanel.Dock="Top">
+            <CheckBox x:Name="chkConectado" DockPanel.Dock="Top" HorizontalAlignment="Center">Conectado</CheckBox>
+            <DockPanel>
+                <Button DockPanel.Dock="Right" Width="200" Click="Button_Click_1">Filtrar</Button>
+                <TextBox x:Name="txtFIltro"></TextBox>
+            </DockPanel>
+        </StackPanel>
+        <Button Click="Button_Click" DockPanel.Dock="Left">Consular</Button>
+        <DataGrid x:Name="gpCountries" />
+    </DockPanel>
 </Window>
